@@ -15,6 +15,12 @@ const signInBody = zod.object({
   password: zod.string(),
 });
 
+const updateBody = zod.object({
+  password: zod.string().optional(),
+  firstName: zod.string().optional(),
+  lastName: zod.string().optional(),
+});
+
 const userControllers = {};
 
 userControllers.signUp = async function (req, res, next) {
@@ -87,12 +93,15 @@ userControllers.signIn = async function (req, res, next) {
 
 userControllers.updateProfile = async (req, res, next) => {
   try {
+    const { success } = updateBody.safeParse(req.body);
+
+    if (!success) {
+      throw new Error("Please provide valid input");
+    }
+
     const updateUser = await User.findByIdAndUpdate(req.userId, req.body, {
       new: true,
     });
-    if (!updateUser) {
-      throw new Error("Something went wrong while updating record");
-    }
 
     res.status(200).json({
       status: "ok",
@@ -102,7 +111,35 @@ userControllers.updateProfile = async (req, res, next) => {
       },
     });
   } catch (err) {
-    next(new ErrorObject(500, "fail", err.message));
+    next(new ErrorObject(401, "fail", err.message));
+  }
+};
+
+userControllers.filterUsers = async (req, res, next) => {
+  try {
+    const filter= req.query.filter || "";
+    const findUsers = await User.find({
+      $or: [
+        {
+          firstName: {
+            $regex: filter,
+          },
+        },
+        {
+          lastName: {
+            $regex: filter,
+          },
+        },
+      ],
+    });
+
+    res.status(200).json({
+      status: "ok",
+      message: "User Fetched Succesfully",
+      data: findUsers,
+    });
+  } catch (err) {
+    next(new ErrorObject(401, "fail", err.message));
   }
 };
 

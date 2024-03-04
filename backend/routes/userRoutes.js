@@ -11,5 +11,6 @@ router.get('/', (req, res) => {
 router.post('/signup', userControllers.signUp)
 router.post('/signin', userControllers.signIn)
 router.put('/',authMiddleware, userControllers.updateProfile)
+router.get('/bulk', authMiddleware, userControllers.filterUsers)
 
 export default router
