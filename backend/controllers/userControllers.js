@@ -85,4 +85,25 @@ userControllers.signIn = async function (req, res, next) {
   }
 };
 
+userControllers.updateProfile = async (req, res, next) => {
+  try {
+    const updateUser = await User.findByIdAndUpdate(req.userId, req.body, {
+      new: true,
+    });
+    if (!updateUser) {
+      throw new Error("Something went wrong while updating record");
+    }
+
+    res.status(200).json({
+      status: "ok",
+      message: "User Profile Updated",
+      data: {
+        user: updateUser,
+      },
+    });
+  } catch (err) {
+    next(new ErrorObject(500, "fail", err.message));
+  }
+};
+
 export default userControllers;
