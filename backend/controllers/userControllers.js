@@ -2,6 +2,7 @@ import User from "../models/user.js";
 import ErrorObject from "../utils/ErrorObject.js";
 import zod from "zod";
 import jwt from "jsonwebtoken";
+import Account from "../models/account.js";
 
 const signupBody = zod.object({
   username: zod.string().email(),
@@ -38,6 +39,11 @@ userControllers.signUp = async function (req, res, next) {
       lastName,
       password,
     });
+
+    await Account.create({
+      userId: user._id,
+      balance: 1+Math.random()*10000
+    })
 
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
       expiresIn: String(process.env.JWT_EXPIRY),
