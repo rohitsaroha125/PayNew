@@ -2,6 +2,7 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import { Modal as MuiModal } from "@mui/material";
+import styles from "./Modal.module.css";
 
 const style = {
   position: "absolute",
@@ -15,8 +16,7 @@ const style = {
   p: 4,
 };
 
-export default function Modal({ open, handleClose, handleOpen, children }) {
-
+export default function Modal({ open, handleClose, children }) {
   return (
     <div>
       <MuiModal
@@ -24,8 +24,9 @@ export default function Modal({ open, handleClose, handleOpen, children }) {
         onClose={handleClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
+        className={styles.modalOuter}
       >
-        {children}
+          <Box className={styles.modalBody}>{children}</Box>
       </MuiModal>
     </div>
   );

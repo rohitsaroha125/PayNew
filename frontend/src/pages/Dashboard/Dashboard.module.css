@@ -1,0 +1,66 @@
+.imgBox{
+    background: #dcdcdc;
+    border: 1px solid black;
+    height: 30px;
+    width: 30px;
+    border-radius: 50%;
+    margin-left: 5px;
+}
+
+.userInfo{
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.headerBox{
+    box-shadow: 1px 1px 1px rgba(0,0,0,0.1);
+    padding: 10px 30px
+}
+
+.balanceBox{
+    padding-left: 30px;
+}
+
+.usersSection{
+    padding-left: 30px;
+    padding-right: 30px;
+    margin-top: 30px;
+}
+
+.userRow{
+    margin-bottom: 15px;
+    border-bottom: 1px solid #dcdcdc;
+}
+
+.searchInput{
+    padding-right: 30px;
+    margin-bottom: 15px;
+}
+
+.searchInput input{
+    width: 100%;
+    padding: 15px 15px;
+    border: 1px solid #dcdcdc;
+    border-radius: 8px;
+}
+
+.amountInput{
+    width: calc(100% - 30px);
+    padding: 15px;
+    margin-bottom: 30px;
+    border: 1px solid #dcdcdc;
+    border-radius: 4px;
+    margin-top: 15px;
+}
+
+.inputBox{
+    width: 100%;
+}
+
+.sendBtn{
+    width: 100%;
+    margin-bottom: 15px !important;
+    padding-top: 10px !important;
+    padding-bottom: 10px !important;
+}
