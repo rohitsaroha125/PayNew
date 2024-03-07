@@ -5,6 +5,7 @@ import styles from "./Home.module.css";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import Tabs from "../../components/tabs/index";
+import useHttpRequest from "../../hooks/useHttpRequest";
 
 const tabsOptions = [
   {
@@ -45,6 +46,11 @@ const registerFormikFields = [
 
 const Home = () => {
   const [showLogin, setShowLogin] = useState(false);
+  const { loading, sendHttpRequest } = useHttpRequest(transformData);
+
+  function transformData(data) {
+    console.log(`data is `, data);
+  }
 
   const handleToggleLogin = () => {
     setShowLogin((prevState) => !prevState);
