@@ -6,6 +6,9 @@ import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import Tabs from "../../components/tabs/index";
 import useHttpRequest from "../../hooks/useHttpRequest";
+import { API_URL } from "../../utils/vars";
+import Loader from "../../components/loader";
+import ReactDOM from "react-dom";
 
 const tabsOptions = [
   {
@@ -46,22 +49,19 @@ const registerFormikFields = [
 
 const Home = () => {
   const [showLogin, setShowLogin] = useState(false);
-  const { loading, sendHttpRequest } = useHttpRequest(transformData);
-
-  function transformData(data) {
-    console.log(`data is `, data);
-  }
 
   const handleToggleLogin = () => {
     setShowLogin((prevState) => !prevState);
   };
 
   return (
-    <Box className={styles.homeBg}>
-      <Box>
-        <Tabs tabsOptions={tabsOptions} />
+    <>
+      <Box className={styles.homeBg}>
+        <Box>
+          <Tabs tabsOptions={tabsOptions} />
+        </Box>
       </Box>
-    </Box>
+    </>
   );
 };
 
@@ -87,54 +87,75 @@ function RegisterUI() {
       .required("Required"),
   });
 
+  const { loading, sendHttpRequest } = useHttpRequest(transformData);
+
+  function transformData(data) {
+    console.log("data is ", data);
+  }
+
+  function handleUserRegister(values) {
+    const httpOptions = {
+      method: "POST",
+      url: `${API_URL}user/signup`,
+      data: {
+        ...values,
+      },
+    };
+
+    sendHttpRequest(httpOptions);
+  }
+
   return (
-    <div>
-      <h1 className="text-center">Register</h1>
-      <Formik
-        initialValues={{
-          firstName: "",
-          lastName: "",
-          username: "",
-          password: "",
-          confirmPassword: "",
-        }}
-        validationSchema={SignupSchema}
-        onSubmit={(values) => {
-          // same shape as initial values
-          console.log(values);
-        }}
-      >
-        {({ errors, touched }) => (
-          <Form>
-            {registerFormikFields.map((field, i) => {
-              return (
-                <>
-                  <Field
-                    name={field.name}
-                    key={i}
-                    placeholder={field.placeholder}
-                    type={field.type || "text"}
-                    className={styles.formikField}
-                  />
-                  {errors[field.name] && touched[field.name] ? (
-                    <div className={styles.errorDiv} key={i}>
-                      {errors[field.name]}
-                    </div>
-                  ) : null}
-                </>
-              );
-            })}
-            <Button
-              className={styles.registerBtn}
-              type="submit"
-              variant="contained"
-            >
-              Register
-            </Button>
-          </Form>
-        )}
-      </Formik>
-    </div>
+    <>
+      {loading && <Loader />}
+      <div>
+        <h1 className="text-center">Register</h1>
+        <Formik
+          initialValues={{
+            firstName: "",
+            lastName: "",
+            username: "",
+            password: "",
+            confirmPassword: "",
+          }}
+          validationSchema={SignupSchema}
+          onSubmit={(values) => {
+            // console.log(values);
+            handleUserRegister(values);
+          }}
+        >
+          {({ errors, touched }) => (
+            <Form>
+              {registerFormikFields.map((field, i) => {
+                return (
+                  <>
+                    <Field
+                      name={field.name}
+                      key={i}
+                      placeholder={field.placeholder}
+                      type={field.type || "text"}
+                      className={styles.formikField}
+                    />
+                    {errors[field.name] && touched[field.name] ? (
+                      <div className={styles.errorDiv} key={i}>
+                        {errors[field.name]}
+                      </div>
+                    ) : null}
+                  </>
+                );
+              })}
+              <Button
+                className={styles.registerBtn}
+                type="submit"
+                variant="contained"
+              >
+                Register
+              </Button>
+            </Form>
+          )}
+        </Formik>
+      </div>
+    </>
   );
 }
 

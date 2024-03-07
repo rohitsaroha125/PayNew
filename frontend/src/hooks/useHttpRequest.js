@@ -9,14 +9,26 @@ const useHttpRequest = (transformData) => {
     setLoading(true);
     try {
       const { data } = await axios(reqOptions);
-      if (data.message) {
-        toast.success(data.message);
-      }
+      handleResponse(data);
       transformData(data);
     } catch (err) {
       toast.error(err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleResponse = (data) => {
+    switch (data.status) {
+      case "ok":
+        console.log("success");
+        toast.success(data.message);
+        break;
+      case "fail":
+        toast.error(data.message);
+        break;
+      default:
+        toast.error(data.message);
     }
   };
 
