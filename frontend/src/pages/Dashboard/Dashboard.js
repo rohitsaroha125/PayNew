@@ -85,6 +85,12 @@ const Dashboard = () => {
     setAmountInput(e.target.value);
   }
 
+  function handleLogout() {
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
+    navigate("/");
+  }
+
   useEffect(() => {
     const userDataFromStorage = JSON.parse(localStorage.getItem("user"));
     const token = localStorage.getItem("token");
@@ -115,7 +121,7 @@ const Dashboard = () => {
           </Grid>
           <Grid item xs={6} className={styles.userInfo}>
             <p>Hello, {userData.firstName || "--"}</p>
-            <Box className={styles.imgBox}></Box>
+            <Box className={styles.imgBox} onClick={handleLogout}></Box>
           </Grid>
         </Grid>
       </Box>
