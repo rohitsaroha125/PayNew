@@ -1,29 +1,34 @@
 import { Box, Button, Grid } from "@mui/material";
 import styles from "./Dashboard.module.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Modal from "../../components/modal";
+import useHttpRequest from "../../hooks/useHttpRequest";
+import Loader from "../../components/loader";
+import { API_URL } from "../../utils/vars";
 
 const userData = {
   firstName: "User",
   balance: 5000,
 };
 
-const users = [
-  {
-    id: 1,
-    firstName: "User",
-    lastName: "1",
-  },
-  {
-    id: 2,
-    firstName: "User",
-    lastName: "2",
-  },
-];
-
 const Dashboard = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
+  const [users, setUsers] = useState([]);
+  const { loading, sendRequestWithToken } = useHttpRequest(transformData);
+
+  function transformData(data) {
+    if (data.data.length) {
+      const newArr = data.data.map((user) => {
+        return {
+          id: user._id,
+          firstName: user.firstName,
+          lastName: user.lastName,
+        };
+      });
+      setUsers(newArr);
+    }
+  }
 
   const handleSelectedUserId = (user) => {
     setModalOpen(true);
@@ -35,8 +40,18 @@ const Dashboard = () => {
     setSelectedUser(null);
   };
 
+  useEffect(() => {
+    const httpOptions = {
+      method: "GET",
+      url: `${API_URL}user/bulk`,
+    };
+
+    sendRequestWithToken(httpOptions);
+  }, []);
+
   return (
     <>
+      {loading && <Loader />}
       <Box className={styles.headerBox}>
         <Grid container>
           <Grid item xs={6}>
@@ -102,9 +117,15 @@ const Dashboard = () => {
             )}
           </Box>
           <Box className={styles.inputBox}>
-            <input className={styles.amountInput} type="text" placeholder="Enter Amount" />
+            <input
+              className={styles.amountInput}
+              type="text"
+              placeholder="Enter Amount"
+            />
           </Box>
-          <Button variant="contained" className={styles.sendBtn}>Send Money</Button>
+          <Button variant="contained" className={styles.sendBtn}>
+            Send Money
+          </Button>
         </Box>
       </Modal>
     </>

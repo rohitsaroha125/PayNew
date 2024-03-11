@@ -18,6 +18,30 @@ const useHttpRequest = (transformData) => {
     }
   };
 
+  const sendRequestWithToken = async (reqOptions) => {
+    setLoading(true);
+
+    if (reqOptions.headers) {
+      reqOptions.headers.authorization = `Bearer ${localStorage.getItem(
+        "token"
+      )}`;
+    } else {
+      reqOptions.headers = {
+        authorization: `Bearer ${localStorage.getItem("token")}`,
+      };
+    }
+
+    try {
+      const { data } = await axios(reqOptions);
+      handleResponse(data);
+      transformData(data);
+    } catch (err) {
+      toast.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleResponse = (data) => {
     switch (data.status) {
       case "ok":
@@ -32,7 +56,7 @@ const useHttpRequest = (transformData) => {
     }
   };
 
-  return { loading, sendHttpRequest };
+  return { loading, sendHttpRequest, sendRequestWithToken };
 };
 
 export default useHttpRequest;
