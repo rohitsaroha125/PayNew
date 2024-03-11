@@ -15,19 +15,11 @@ const Dashboard = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [users, setUsers] = useState([]);
+  const [searchVal, setSearchVal] = useState("");
   const { loading, sendRequestWithToken } = useHttpRequest(transformData);
 
   function transformData(data) {
-    if (data.data.length) {
-      const newArr = data.data.map((user) => {
-        return {
-          id: user._id,
-          firstName: user.firstName,
-          lastName: user.lastName,
-        };
-      });
-      setUsers(newArr);
-    }
+    setUsers(data.data)
   }
 
   const handleSelectedUserId = (user) => {
@@ -40,14 +32,18 @@ const Dashboard = () => {
     setSelectedUser(null);
   };
 
+  function handleSearchValue(e) {
+    setSearchVal(e.target.value);
+  }
+
   useEffect(() => {
     const httpOptions = {
       method: "GET",
-      url: `${API_URL}user/bulk`,
+      url: `${API_URL}user/bulk?filter=${searchVal}`,
     };
 
-    sendRequestWithToken(httpOptions);
-  }, []);
+    sendRequestWithToken(httpOptions, false);
+  }, [searchVal]);
 
   return (
     <>
@@ -68,7 +64,11 @@ const Dashboard = () => {
       </Box>
       <Box className={styles.usersSection}>
         <Box className={styles.searchInput}>
-          <input placeholder="Search Name" type="text" />
+          <input
+            placeholder="Search Name"
+            type="text"
+            onChange={handleSearchValue}
+          />
         </Box>
         {users.map((user, i) => {
           return (

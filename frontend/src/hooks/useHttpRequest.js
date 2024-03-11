@@ -2,14 +2,14 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 import axios from "axios";
 
-const useHttpRequest = (transformData) => {
+const useHttpRequest = (transformData, showToast = true) => {
   const [loading, setLoading] = useState(false);
 
   const sendHttpRequest = async (reqOptions) => {
     setLoading(true);
     try {
       const { data } = await axios(reqOptions);
-      handleResponse(data);
+      handleResponse(data, showToast);
       transformData(data);
     } catch (err) {
       toast.error(err);
@@ -18,7 +18,7 @@ const useHttpRequest = (transformData) => {
     }
   };
 
-  const sendRequestWithToken = async (reqOptions) => {
+  const sendRequestWithToken = async (reqOptions, showToast = true) => {
     setLoading(true);
 
     if (reqOptions.headers) {
@@ -33,7 +33,7 @@ const useHttpRequest = (transformData) => {
 
     try {
       const { data } = await axios(reqOptions);
-      handleResponse(data);
+      handleResponse(data, showToast);
       transformData(data);
     } catch (err) {
       toast.error(err);
@@ -42,17 +42,19 @@ const useHttpRequest = (transformData) => {
     }
   };
 
-  const handleResponse = (data) => {
-    switch (data.status) {
-      case "ok":
-        console.log("success");
-        toast.success(data.message);
-        break;
-      case "fail":
-        toast.error(data.message);
-        break;
-      default:
-        toast.error(data.message);
+  const handleResponse = (data, showToast = true) => {
+    if (showToast) {
+      switch (data.status) {
+        case "ok":
+          console.log("success");
+          toast.success(data.message);
+          break;
+        case "fail":
+          toast.error(data.message);
+          break;
+        default:
+          toast.error(data.message);
+      }
     }
   };
 
