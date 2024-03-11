@@ -12,7 +12,7 @@ const useHttpRequest = (transformData, showToast = true) => {
       handleResponse(data, showToast);
       transformData(data);
     } catch (err) {
-      toast.error(err);
+      toast.error(err.response.data.message);
     } finally {
       setLoading(false);
     }
@@ -36,7 +36,7 @@ const useHttpRequest = (transformData, showToast = true) => {
       handleResponse(data, showToast);
       transformData(data);
     } catch (err) {
-      toast.error(err);
+      toast.error(err.response.data.message);
     } finally {
       setLoading(false);
     }

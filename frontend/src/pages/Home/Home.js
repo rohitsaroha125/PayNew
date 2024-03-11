@@ -10,6 +10,7 @@ import { API_URL } from "../../utils/vars";
 import Loader from "../../components/loader";
 import ReactDOM from "react-dom";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const tabsOptions = [
   {
@@ -67,6 +68,7 @@ const Home = () => {
 };
 
 function RegisterUI() {
+  const navigate = useNavigate();
   const SignupSchema = Yup.object().shape({
     firstName: Yup.string()
       .min(2, "Too Short!")
@@ -93,6 +95,7 @@ function RegisterUI() {
   function transformData(data) {
     localStorage.setItem("user", JSON.stringify(data.data.user));
     localStorage.setItem("token", data.data.token);
+    navigate("/dashboard");
   }
 
   function handleUserRegister(values) {
@@ -163,6 +166,7 @@ function RegisterUI() {
 
 function LoginUI() {
   const { loading, sendHttpRequest } = useHttpRequest(transformData);
+  const navigate = useNavigate();
 
   const SignupSchema = Yup.object().shape({
     username: Yup.string().email("Invalid email").required("Required"),
@@ -175,6 +179,7 @@ function LoginUI() {
   function transformData(data) {
     localStorage.setItem("user", JSON.stringify(data.data.user));
     localStorage.setItem("token", data.data.token);
+    navigate("/dashboard");
   }
 
   function handleUserLogin(values) {
