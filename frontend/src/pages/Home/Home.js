@@ -9,6 +9,7 @@ import useHttpRequest from "../../hooks/useHttpRequest";
 import { API_URL } from "../../utils/vars";
 import Loader from "../../components/loader";
 import ReactDOM from "react-dom";
+import { toast } from "react-toastify";
 
 const tabsOptions = [
   {
@@ -90,7 +91,8 @@ function RegisterUI() {
   const { loading, sendHttpRequest } = useHttpRequest(transformData);
 
   function transformData(data) {
-    console.log("data is ", data);
+    localStorage.setItem("user", JSON.stringify(data.data.user));
+    localStorage.setItem("token", data.data.token);
   }
 
   function handleUserRegister(values) {
@@ -160,6 +162,8 @@ function RegisterUI() {
 }
 
 function LoginUI() {
+  const { loading, sendHttpRequest } = useHttpRequest(transformData);
+
   const SignupSchema = Yup.object().shape({
     username: Yup.string().email("Invalid email").required("Required"),
     password: Yup.string()
@@ -167,6 +171,23 @@ function LoginUI() {
       .max(50, "Too Long!")
       .required("Required"),
   });
+
+  function transformData(data) {
+    localStorage.setItem("user", JSON.stringify(data.data.user));
+    localStorage.setItem("token", data.data.token);
+  }
+
+  function handleUserLogin(values) {
+    const httpOptions = {
+      method: "POST",
+      url: `${API_URL}user/signin`,
+      data: {
+        ...values,
+      },
+    };
+
+    sendHttpRequest(httpOptions);
+  }
 
   return (
     <div>
@@ -179,7 +200,7 @@ function LoginUI() {
         validationSchema={SignupSchema}
         onSubmit={(values) => {
           // same shape as initial values
-          console.log(values);
+          handleUserLogin(values);
         }}
       >
         {({ errors, touched }) => (
